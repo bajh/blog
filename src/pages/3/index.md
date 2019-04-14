@@ -17,10 +17,13 @@ Now, we don't really want to interpret these bits as four 8-bit numbers anyway, 
 To do this conversion, we can read each byte and convert it to a 32-bit integer that is padded on the left and right sides with 0s so that it goes into its proper spot in the 32-bit integer, then combine them all together using a bitwise OR.
 
 Here's what will happen to each byte, with the padding noted in parentheses
+
+```
 b1:  01000000  (00000000  00000000  00000000) |
 b2: (00000000)  10000000 (00000000  00000000) |
 b3: (00000000   00000000) 00100000 (00000000) |
 b4: (00000000   00000000  00000000) 00000001
+```
 
 But how do we apply this padding in code? What we _ought_ to be able to do is simply shift the leftmost/first byte in the array to the left by 24 bits; the second item by 16 bits; and the third item by 8 bits, which will give us the padded representations above. The bit-shifting implicitly converts each byte to a 32-bit integer (the `int` type in Java).
 
@@ -30,8 +33,10 @@ Remember how Java wants to represent the second byte, 10000000, as -128 instead 
 
 So before we shift the bits, we need to chop off all the extra 1s on the left. The standard way to do this is to take each `byte` and apply `& 0xFF` to it. `0xFF` is `00000000 00000000 00000000 11111111` so it'll both convert the `byte` to a 32-bit int and mask out all of the bits higher than the original byte, turning it back into a positive number if it wasn't before.
 
-orignal byte as 32-bit int:  11111111 11111111 11111111 10000000 &
+```
+original byte as 32-bit int:  11111111 11111111 11111111 10000000 &
         255 as 32-bit int:   00000000 00000000 00000000 11111111
                            = 00000000 00000000 00000000 10000000 
+```
 
 Finally, the result can just be shifted the required number of bits!
