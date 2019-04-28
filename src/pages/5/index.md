@@ -91,6 +91,6 @@ In this state of the system, we feel pretty sure that Sophie's is popular and pr
 
 Notice how at this point Yemen Cafe's graph barely intersects with the Sophie's graph. In order for Yemen Cafe to be recommended, we'd need to get extremely unlucky. We'd need to randomly sample a point on that tiny sliver on the Yemen Cafe graph that's to the right of where the it overlaps with Sophie's, and we'd also need to sample a point on the tiny sliver of the Sophie's graph that's to the left of that intersection point. _And_ - this is much more likely as a standalone event - we'd need to sample a point on the Hanco's graph that's to the left of the point we choose for Yemen Cafe.
 
-# Production
+## Production
 
 This is just a toy demo, but it's interesting to think about how Thompson Sampling would be scaled to choose between many restaurants. Randomly sampling between probabilities isn't something that can easily be computed ahead of time and cached. It strikes me as a perfect problem for map-reduce! We could store the parameters to a Beta distribution for each restaurant under a key on different database partitions, and to make a prediction, we could fan out to those partitions to have the nodes randomly sample from the distributions (the map phase). The reduce phase then simply consists of folding all the results into a maximum value.
